@@ -1,10 +1,22 @@
-<table class='table table-hover table-bordered'>
-<tr>
-	<th>Name</th>
-</tr>
-<tr ng-repeat='note in notes'>
-	<td>
-		{{ note.name}}
-	</td>
-</tr>
-</table>
+<p><input type='search' class='form-control' placeholder='Search...' ng-model='query' /></p>
+<div class='panel panel-primary'>
+	<div class='panel-heading'>
+		<h3 class='panel-title'>All Notes</h3>
+	</div>
+	<div class='panel-body'>
+		<div class='list-group'>
+			<a href="#" class='list-group-item' ng-repeat='note in notes | filter: query'>
+			<h4 class='list-group-item-heading'>
+				{{ note['noteTitle'] }} 
+				<span class='badge'> {{ note['noteType'] }} </span>
+				<span class='badge'> {{ note['noteStatus'] }} </span>
+			</h4>			
+			<p class='list-group-item-text'>				
+			 	{{ note['noteDesc'] }} 
+			 	<span class='glyphicon glyphicon-edit pull-right' ng-click='pop(note["noteId"])'></span>
+			</p>
+			</a>
+		</div>	
+	</div>
+	
+</div>

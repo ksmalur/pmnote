@@ -1,0 +1,36 @@
+<div class='col-lg-6'>
+	<h2> {{note.noteTitle}} </h2>
+	<form name='editNote' novalidate class='form-horizontal'>
+		<div class='row form-group'>
+			<label class='control-label'> Note Title *</label>
+			<input ng-model='note["noteTitle"]' type='text' class='form-control' placeholder="Enter Note Title" />	
+			
+			<label class='control-label'> Note Description <span>*</span> </label>
+			<textarea ng-model='note["noteDesc"]' class='form-control' required placeholder="Enter Description"/>	
+
+			<label class='control-label'> Note Type <span>*</span> </label>
+			<select ng-model='note["noteType"]' class='form-control' required placeholder="Select Note Type"> 
+				<option value='Action Item'> Action Item </option>
+				<option value='Risk'> Risk </option>
+				<option value='Issue'> Issue </option>
+			</select>
+
+			<label class='control-label'> Note Status <span>*</span> </label>
+			<select ng-model='note["noteStatus"]' class='form-control' required> 
+				<option value='Open'> Open </option>
+				<option value='In Progress'> In Progress </option>
+				<option value='Blocked'> Blocked </option>
+				<option value='Closed'> Closed </option>
+			</select>
+
+			<p>Last Updated on {{ note["noteLastUpdatedOn"] | date: 'dd-MMM-yyyy, HH:mm:ss' }} </p>
+		</div>
+		<div class='row form-group'>
+			<div>
+				<button class="btn btn-primary btn-lg btn-block" ng-click='update()'> Update Note </button>
+			</div>
+			
+		</div>			
+
+	</form>
+</div>

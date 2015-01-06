@@ -1,6 +1,55 @@
+function updateNoteType($scope){
+	if ($scope.note.noteTitle !== "") {
+			//	console.log("Printing on BlurUpdate - " + $scope.note.noteTitle);
+				var riskString = "@risk";
+				var issueString = "@issue";
+				var aiString = "@ai";	
+				var titleString = $scope.note.noteTitle;
+				
+				titleString = titleString.toLowerCase();
+				var selectedType = "";
+
+				riskOcc = titleString.indexOf(riskString);
+				issueOcc = titleString.indexOf(issueString);		
+				aiOcc = titleString.indexOf(aiString);
+
+				// console.log("Risk Occ = " + riskOcc);
+				// console.log("Issue Occ = " + issueOcc);
+				// console.log("AI Occ = " + aiOcc);
+				
+				// console.log("*****************");
+
+				if (riskOcc == -1) riskOcc = 9999;
+				if (issueOcc == -1) issueOcc = 9999;
+				if (aiOcc == -1) aiOcc = 9999;
+
+				// console.log("Risk Occ = " + riskOcc);
+				// console.log("Issue Occ = " + issueOcc);
+				// console.log("AI Occ = " + aiOcc);
+
+				if (riskOcc < issueOcc && riskOcc < aiOcc){
+					// console.log("Risk Occurence");
+					selectedType = "Risk";
+				} else if (issueOcc < riskOcc && issueOcc < aiOcc){
+					//console.log("Issue Occurence");
+					selectedType = "Issue";
+				}else if (aiOcc < riskOcc && aiOcc < issueOcc){
+					// console.log("AI Occurence");
+					selectedType = "Action Item";
+				}
+
+				$scope.note.noteType = selectedType;
+			} 
+			else {
+				$scope.note.noteType = "";
+			}
+}
+
+
 angular.module('PMNoteApp')
 	.controller('NoteController', function($scope, NoteResource, $location){
 		$scope.notes = NoteResource.query();
+
 		$scope.query = "";
 		$scope.fields = ['noteTitle', 'noteDesc', 'noteType', 'noteStatus', 'noteOwner'];
 		$scope.pop = function  (noteId) {
@@ -11,9 +60,10 @@ angular.module('PMNoteApp')
 
 		};
 	})
-	.controller('NewController', function($scope, NoteResource, $location){
+	.controller('NewController', function($scope, NoteResource, $location, $timeout){
 
 		$scope.note = new NoteResource();
+		$scope.note.noteTitle="";
 
 		$scope.save = function() {
 			if ($scope.newNote.$invalid){
@@ -26,8 +76,17 @@ angular.module('PMNoteApp')
 			}	
 		};
 
+		$scope.blurUpdateType = function() {
+			updateNoteType($scope);
+		};
+		var saveTimeOut;
+		$scope.updateType = function() {
+			$timeout.cancel(saveTimeOut);
+			saveTimeOut = $timeout($scope.blurUpdateType, 500);
+		};
+
 	})
-	.controller('SingleController', function($scope, $document, NoteResource, $routeParams, $location){
+	.controller('SingleController', function($scope, $document, NoteResource, $routeParams, $location, $timeout){
 		$scope.note= NoteResource.get({noteId: $routeParams.noteId});
 
 		$scope.update = function(){
@@ -35,6 +94,15 @@ angular.module('PMNoteApp')
 				$scope.note.$update({noteId: $routeParams.noteId});
 				$location.url('/notes');
 
+		};
+
+		$scope.blurUpdateType = function() {
+			updateNoteType($scope);
+		};
+		var saveTimeOut;
+		$scope.updateType = function() {
+			$timeout.cancel(saveTimeOut);
+			saveTimeOut = $timeout($scope.blurUpdateType, 500);
 		};
 
 		$scope.delete = function () {

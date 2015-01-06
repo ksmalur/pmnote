@@ -3,7 +3,7 @@
 	<form name='editNote' novalidate class='form-horizontal'>
 		<div class='row form-group'>
 			<label class='control-label'> Note Title *</label>
-			<input ng-model='note["noteTitle"]' type='text' class='form-control' placeholder="Enter Note Title" />	
+			<input ng-model='note["noteTitle"]' type='text' class='form-control' placeholder="Enter Note Title" ng-change="updateType()" ng-blur="blurUpdateType()" />	
 			
 			<label class='control-label'> Note Description <span>*</span> </label>
 			<textarea ng-model='note["noteDesc"]' class='form-control' required placeholder="Enter Description"/>	

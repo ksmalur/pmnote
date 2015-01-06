@@ -95,7 +95,7 @@ router
 			delete note.$promise;
 			delete note.$resolved;
 			delete note._id;
-			//note.noteLastUpdatedOn = Date.now().toString();
+			note.noteLastUpdatedOn = Date.now().toString();
 			NoteModel.findOneAndUpdate(conditions, note, function (err, data){
 				if (err) {
 					console.log('Error while trying to update the note -' + req.params.noteId);

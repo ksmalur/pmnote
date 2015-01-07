@@ -49,13 +49,20 @@ function updateNoteType($scope){
 angular.module('PMNoteApp')
 	.controller('NoteController', function($scope, NoteResource, $location){
 		$scope.notes = NoteResource.query();
-
 		$scope.query = "";
 		$scope.fields = ['noteTitle', 'noteDesc', 'noteType', 'noteStatus', 'noteOwner'];
-		$scope.pop = function  (noteId) {
+		$scope.pop = function  (noteId, context) {
 			// body...
-			var myUrl = '/note/' + noteId;
-			console.log("Trying to Edit " + myUrl);
+			var prefix = "";
+			if (context == "edit"){
+				prefix = "/note/";
+			} else if (context == "update"){
+				console.log("HO 1");
+				prefix = "/note/update/";
+			}
+
+			var myUrl = prefix + noteId;
+			console.log("Trying to " + context + '<--->' + myUrl);
 			$location.url(myUrl);
 
 		};
@@ -70,7 +77,7 @@ angular.module('PMNoteApp')
 				console.log("Error in Save");
 				$scope.$broadcast('record:invalid');
 			} else {
-				console.log("Saving DOcument");
+				console.log("Saving Document");
 				$scope.note.$save();
 				$location.url('/notes');
 			}	
@@ -109,5 +116,50 @@ angular.module('PMNoteApp')
 			// body...
 			$scope.note.$delete();
 			$location.url('/notes');
+		};
+	})
+	.controller('UpdateController', function($scope,UpdateResource,$location, $timeout, $routeParams){
+		$scope.myUpdate = [{updateId: ""}];
+		$scope.newUpdateIndex = -1;
+		console.log("HO 2");
+		$scope.note = UpdateResource.get({noteId: $routeParams.noteId});
+		
+
+
+		$scope.postUpdate = function(){
+			//console.log("1");
+
+			$scope.newUpdateIndex = $scope.note.noteUpdates.length;
+			// console.log("2: Note uPdate Length " + $scope.note.noteUpdates.length);
+			
+
+			$scope.myUpdate[0].updateId = $scope.newUpdateIndex;
+			// console.log("3: my Update ID Updated: " + $scope.myUpdate);
+
+		//	$scope.myUpdate[0].updateText = "";
+			// console.log("4: my Update Text Updated: " + $scope.myUpdate[0].updateText);
+
+			
+			// console.log("5: Printing my Update: " + JSON.stringify($scope.myUpdate[0]));
+
+			$scope.note.noteUpdates.push($scope.myUpdate);
+			
+			$scope.newUpdateIndex = $scope.note.noteUpdates.length;
+			// console.log("6 :" + $scope.note.noteUpdates.length);
+			// console.log("6 :" + $scope.newUpdateIndex);
+
+			// console.log("7: " + $scope.note.noteUpdates[$scope.myUpdate[0].updateId].updateId);
+			// console.log("8:" + $scope.note.noteUpdates[$scope.myUpdate[0].updateId].updateText);
+			// console.log("9:POST: " + JSON.stringify($scope.note.noteUpdates[$scope.myUpdate[0].updateId]));
+
+			console.log("Object Pushing ********************");
+			console.log(JSON.stringify($scope.note));
+			console.log("Object Pushing ********************");
+			$scope.note.$update({noteId: $routeParams.noteId});
+			$location.url('/notes');
+		};
+
+		$scope.see = function(){
+
 		};
 	});

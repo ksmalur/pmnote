@@ -1,3 +1,4 @@
+<a href="/note/new"> Add New Note </a> 
 <div class='panel panel-primary'>
 	<div class='panel-heading'>
 		<h3 class='panel-title'>All Notes</h3>
@@ -16,12 +17,14 @@
 				<span class="badge progress-bar-success" ng-show='note["noteStatus"]	=== "Closed"'> Closed </span>
 				<span class="badge progress-bar-warning" ng-show='note["noteStatus"] ==="In Progress"'> In Progress </span>
 				<span class="badge progress-bar-primary" ng-show='note["noteStatus"] ==="Open"'> Open </span>
+			 	<span class='glyphicon glyphicon-comment pull-right' ng-click='pop(note["noteId"], "update")'></span>
 
 			</h4>			
 
 			<p class='list-group-item-text'>				
-			 	{{ note['noteDesc'] }} 
-			 	<span class='glyphicon glyphicon-edit pull-right' ng-click='pop(note["noteId"])'></span>
+			 	<table><td>{{ note['noteDesc'] }} </td>
+			 	<span class='glyphicon glyphicon-edit pull-right' ng-click='pop(note["noteId"], "edit")'></span>
+			 	</table>
 			</p>
 			</a>
 		</div>	

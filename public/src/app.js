@@ -13,6 +13,10 @@ angular.module('PMNoteApp', ['ngRoute', 'ngResource', 'ngMessages'])
 				controller: 'SingleController',
 				templateUrl: 'views/single.html'							
 			})
+			.when('/note/update/:noteId', {
+				controller: 'UpdateController',
+				templateUrl: 'views/update.html'							
+			})
 			.otherwise({
 				redirectTo: '/notes'
 			});	

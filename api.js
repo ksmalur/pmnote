@@ -9,6 +9,13 @@ var express		= require('express'),
 	var db		= mongoose.connection;
 
 	//Schema Definition
+	var updateSchema	= new mongoose.Schema({
+			updateID: String,
+			updateText: String,
+			updateOwner: String,
+			updateCreatedOn: {type: String, default: Date.now},
+	});
+
 	var noteSchema	= new mongoose.Schema({
 		noteId: String,
 		noteTitle: String,
@@ -19,12 +26,7 @@ var express		= require('express'),
 		noteType: {type: String, enum: ['Action Item', 'Issue', 'Risk', 'Others']},
 		noteStatus:  {type: String, enum: ['Open', 'In Progress', 'Blocked', 'Closed']},
 		noteLastUpdatedOn: {type: String, default: Date.now},
-		noteUpdates: [{
-			updateID: String,
-			updateText: String,
-			updateOwner: String,
-			updateCreatedOn: String
-		}]
+		noteUpdates: [updateSchema]
 	},
 	{
 			collection: 'Notes'
@@ -35,6 +37,7 @@ var express		= require('express'),
 	});
 	db.on('open', function() {
 		NoteModel	= mongoose.model('Note', noteSchema);
+		UpdateModel = mongoose.model('Update', updateSchema);
 	});	
 
 
@@ -75,6 +78,7 @@ router
 		//console.log('Received Param -' + req.params.noteId);
 		req.query = NoteModel.where({noteId: req.params.noteId});	
 		//console.log(req.query);
+		console.log("HO 3");
 		next();
 	})
 	.route('/note/:noteId')
@@ -84,7 +88,7 @@ router
 					console.log('Failed to get the note id -' + req.params.noteId );
 					console.log(err);
 				} else {
-					console.log("ID Found " + data.noteId + " note(s).");
+					console.log("HO 99 ID Found " + data.noteId + " note(s).");
 					res.json(data);
 				}
 			});
@@ -119,4 +123,37 @@ router
 			});
 		});
 
+
+router
+
+	.route("/note/update/:noteId")
+		.get(function (req, res, next){
+				var query = NoteModel.where({noteId: req.params.noteId});	
+					query.findOne(function(err, data){
+						if(err) {
+							console.log('Failed to get the note id -' + req.params.noteId );
+							console.log(err);
+						} else {
+							//console.log("Found the Note HO 5: " + data) ;
+							res.json(data);
+						}
+					});
+				})
+		.put(function(req, res) {
+			var conditions = {noteId: req.params.noteId};
+			var note = req.body;
+			delete note.$promise;
+			delete note.$resolved;
+			delete note._id;
+			note.noteLastUpdatedOn = Date.now().toString();
+			NoteModel.findOneAndUpdate(conditions, note, function (err, data){
+				if (err) {
+					console.log('Error while trying to update the note -' + req.params.noteId);
+					console.log(err);
+				} else {
+					console.log("PUT Successfull\n***************" + data );
+					res.json(data);
+				}
+			});
+		});
 module.exports = router;

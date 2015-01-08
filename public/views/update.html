@@ -1,7 +1,7 @@
 
 <div class="col-lg-6">
 	<div class="well">
-		<h2> {{ note.noteTitle }} </h2>
+		<h4> {{ note.noteTitle }} </h4>
 	
 	<form name='updateForm' novalidate class='form-horizontal'>
 			<div class='row form-group'>
@@ -27,7 +27,7 @@
 		<div class='panel-body'>
 			<p><input type='search' class='form-control' placeholder='Search Updates' ng-model='query' /></p>
 			<div class='list-group'>
-				<a href="#" class='list-group-item' ng-repeat='update in note["noteUpdates"] | filter: query'>
+				<a href="#" class='list-group-item' ng-repeat='update in note["noteUpdates"] | filter: query  | orderBy: "-updateCreatedOn"'>
 				<h4 class='list-group-item-heading'>
 					{{ update.updateText }} 		
 					<span class="badge progress-bar-info"> {{update.updateOwner}}</span>					

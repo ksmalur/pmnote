@@ -7,7 +7,8 @@ function updateNoteType($scope){
 				var titleString = $scope.note.noteTitle;
 				
 				titleString = titleString.toLowerCase();
-				var selectedType = "";
+				var selectedType = $scope.note.noteType;
+				//var selectedType = "";
 
 				riskOcc = titleString.indexOf(riskString);
 				issueOcc = titleString.indexOf(issueString);		
@@ -47,10 +48,13 @@ function updateNoteType($scope){
 
 
 angular.module('PMNoteApp')
-	.controller('NoteController', function($scope, NoteResource, $location, $rootScope){
+	.controller('NoteController', function($scope, NoteResource, $location, $rootScope, filterFilter){
 		$scope.notes = NoteResource.query();
+		//$scope.filteredNotes = NoteResource.get({noteStatus: ["Blocked", "Open"]}, true)
 		$rootScope.PAGE = "all";
 		$scope.query = "";
+		$scope.sortCriteria = {sortField: "noteLastUpdatedOn", sortOrder: true, fieldDisplay: "Last Updated Time", orderDisplay: "Descending"}
+		$scope.filter = {};
 
 		$scope.fields = ['noteTitle', 'noteDesc', 'noteType', 'noteStatus', 'noteOwner'];
 		$scope.pop = function  (noteId, context) {
@@ -64,8 +68,35 @@ angular.module('PMNoteApp')
 
 			var myUrl = prefix + noteId;
 			$location.url(myUrl);
-
 		};
+
+
+		$scope.setSortCriteria = function(input, display){
+			$scope.sortCriteria.sortField = input;
+			//$scope.sortCriteria.sortOrder = true;
+			$scope.sortCriteria.fieldDisplay = display;
+		};
+
+		$scope.setSortOrder = function(input){
+			if (input == "Ascending"){
+				$scope.sortCriteria.sortOrder = false;
+				$scope.sortCriteria.orderDisplay = "Ascending";
+
+			} else if (input == "Descending") {
+				$scope.sortCriteria.sortOrder = true;
+				$scope.sortCriteria.orderDisplay = "Descending";
+			}
+		};
+
+		$scope.statusFilter = function(status){
+			return filterFilter($scope.notes, status);
+		}
+
+		$scope.typeFilter = function(type){
+			//queryStr = "{noteType: '" + type + "'}"
+			// console.log(queryStr)
+			return filterFilter($scope.notes, type);
+		}
 
 	})
 	.controller('NewController', function($scope, NoteResource, $location, $timeout, $rootScope){
@@ -73,6 +104,7 @@ angular.module('PMNoteApp')
 		$scope.note = new NoteResource();
 		$scope.note.noteTitle="";
 		$rootScope.PAGE= "new";
+
 
 		$scope.save = function() {
 			if ($scope.newNote.$invalid){

@@ -10,7 +10,7 @@ var express		= require('express'),
 
 	//Schema Definition
 	var updateSchema	= new mongoose.Schema({
-			updateID: String,
+			updateId: String,
 			updateText: String,
 			updateOwner: String,
 			updateCreatedOn: {type: String, default: Date.now},
@@ -33,7 +33,7 @@ var express		= require('express'),
 	});
 
 	db.on('error', function(err) {
-		console.log(err);
+		console.log("Hello " + err);
 	});
 	db.on('open', function() {
 		NoteModel	= mongoose.model('Note', noteSchema);
@@ -125,7 +125,6 @@ router
 
 
 router
-
 	.route("/note/update/:noteId")
 		.get(function (req, res, next){
 				var query = NoteModel.where({noteId: req.params.noteId});	
@@ -142,6 +141,8 @@ router
 		.put(function(req, res) {
 			var conditions = {noteId: req.params.noteId};
 			var note = req.body;
+			console.log(req.body);
+
 			delete note.$promise;
 			delete note.$resolved;
 			delete note._id;

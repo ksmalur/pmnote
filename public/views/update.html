@@ -1,27 +1,45 @@
+
+<div class="col-lg-6">
+	<div class="well">
+		<h2> {{ note.noteTitle }} </h2>
+	
+	<form name='updateForm' novalidate class='form-horizontal'>
+			<div class='row form-group'>
+				<label class='control-label'> Update <span>*</span> </label>
+				<textarea ng-model='myUpdate[0]["updateText"]' class='form-control' required placeholder="Enter Update"/>
+			</div>
+			<div class='row form-group'>
+				<div>
+					<button class="btn btn-success btn-lg btn-block" ng-click='postUpdate()'> Post Update </button>
+				</div>
+				
+			</div>			
+	</form>
+	</div>
+</div>
+
 <div class="col-lg-6">
 
-
-<p><label> Title </label> <span>{{ note["noteTitle"]}}</span></p>
-<p><label> Length </label> <span>{{ note["noteUpdates"].length}}</span></p>
-<p><label> New Update Index </label> <span>{{ newUpdateIndex }}</span></p>
-<p>
-<button ng-click="see()"> view </button>
-</p>
-<form name='updateForm' novalidate class='form-horizontal'>
-		<div class='row form-group'>
-			<label class='control-label'> Update <span>*</span> </label>
-			<textarea ng-model='myUpdate[0]["updateText"]' class='form-control' required placeholder="Enter Update"/>
+	<div class='panel panel-primary'>
+		<div class='panel-heading'>
+			<h4 class='panel-title'> Number of Updates : {{ note.noteUpdates.length}} </h4>
 		</div>
-		<div class='row form-group'>
-			<div>
-				<button class="btn btn-primary btn-lg btn-block" ng-click='postUpdate()'> Post Update </button>
-			</div>
-			
-		</div>			
+		<div class='panel-body'>
+			<p><input type='search' class='form-control' placeholder='Search Updates' ng-model='query' /></p>
+			<div class='list-group'>
+				<a href="#" class='list-group-item' ng-repeat='update in note["noteUpdates"] | filter: query'>
+				<h4 class='list-group-item-heading'>
+					{{ update.updateText }} 		
+					<span class="badge progress-bar-info"> {{update.updateOwner}}</span>					
+				</h4>			
 
-
-		<p><span> 1: {{ note["noteUpdates[newUpdateIndex]"]["updateText"] }} </span></p>
-		<p><span> 2: {{ myUpdate[0].updateId}} </span></p>
-		<p><span> 3: {{ myUpdate[0].updateText}} </span></p>
-</form>
+				<p class='list-group-item-text'>				
+				 	<table><td align='right'>Created:  {{ update['updateCreatedOn'] | date: 'dd-MMM-yyyy, HH:mm:ss'}} </td>
+				 	</table>
+				</p>
+				</a>
+			</div>	
+		</div>
+		
+	</div>
 </div>

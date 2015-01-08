@@ -1,33 +1,76 @@
-<a href="/note/new"> Add New Note </a> 
-<div class='panel panel-primary'>
-	<div class='panel-heading'>
-		<h3 class='panel-title'>All Notes</h3>
+<div class="col-lg-4">
+	<div class='panel panel-primary'>
+		<div class='panel-heading'>
+			<h3 class='panel-title'>Dashboard</h3>
+		</div>
+		<div class='panel-body'>
+			<div class="list-group">
+				<h4 class='list-group-item-heading'> Filter by Status </h4>
+				<a href="#" class="list-group-item active"> All <span class='badge'> {{ notes.length }} </span> </a>
+				<a href="#" class="list-group-item"> Open <span class='badge'> 3 </span></a>
+				<a href="#" class="list-group-item"> In Progress <span class='badge'> 7 </span> </a>
+				<a href="#" class="list-group-item"> Blocked <span class='badge'> 2 </span></a>
+			</div>
+
+			<div class="list-group">
+				<h4 class='list-group-item-heading'> Filter by Types </h4>
+				<a href="#" class="list-group-item active"> All </a>
+				<a href="#" class="list-group-item"> Risk </a>
+				<a href="#" class="list-group-item"> Issue </a>
+				<a href="#" class="list-group-item"> Action Items </a>
+			</div>
+		</div>
+		
 	</div>
-	<div class='panel-body'>
-		<p><input type='search' class='form-control' placeholder='Search Notes' ng-model='query' /></p>
-		<div class='list-group'>
-			<a href="#" class='list-group-item' ng-repeat='note in notes | filter: query'>
-			<h4 class='list-group-item-heading'>
-				{{ note['noteTitle'] }} 							
-				<span class="badge progress-bar-info" ng-show='note["noteType"] === "Risk"'> Risk </span>
-				<span class="badge progress-bar-info" ng-show='note["noteType"]	=== "Action Item"'> Action Item </span>
-				<span class="badge progress-bar-info" ng-show='note["noteType"] ==="Issue"'> Issue </span>
-
-				<span class="badge progress-bar-danger" ng-show='note["noteStatus"] === "Blocked"'> Blocked </span>
-				<span class="badge progress-bar-success" ng-show='note["noteStatus"]	=== "Closed"'> Closed </span>
-				<span class="badge progress-bar-warning" ng-show='note["noteStatus"] ==="In Progress"'> In Progress </span>
-				<span class="badge progress-bar-primary" ng-show='note["noteStatus"] ==="Open"'> Open </span>
-			 	<span class='glyphicon glyphicon-comment pull-right' ng-click='pop(note["noteId"], "update")'></span>
-
-			</h4>			
-
-			<p class='list-group-item-text'>				
-			 	<table><td>{{ note['noteDesc'] }} </td>
-			 	<span class='glyphicon glyphicon-edit pull-right' ng-click='pop(note["noteId"], "edit")'></span>
-			 	</table>
-			</p>
-			</a>
-		</div>	
-	</div>
-	
 </div>
+
+<div class="col-lg-8">
+	<div class='panel panel-primary'>
+		<div class='panel-heading'>
+			<h3 class='panel-title'>All Notes</h3>
+		</div>
+		<div class='panel-body'>
+			<p><input type='search' class='form-control' placeholder='Search Notes...' ng-model='query' ng-change="updateQuery()" ng-blur="updateQuery()" /></p>
+
+			<div class='list-group'>
+				<a href="#" class='list-group-item' ng-repeat='note in notes | filter: query  | orderBy: note["noteLastUpdatedOn"] : true'>
+				<h4 class='list-group-item-heading'>
+					{{ note['noteTitle'] }} 							
+					<span class="badge progress-bar-info"> {{ note['noteType'] }} </span>
+
+				<!--	
+					<span class="badge progress-bar-info" ng-show='note["noteType"]	=== "Risk"'> Risk </span>
+					<span class="badge progress-bar-info" ng-show='note["noteType"]	=== "Action Item"'> Action Item </span>
+					<span class="badge progress-bar-info" ng-show='note["noteType"] ==="Issue"'> Issue </span>
+				-->
+
+					<span class="badge progress-bar-warning" ng-click="updateQuery(note['noteStatus'], true)"> {{ note['noteStatus'] }} </span>
+				<!--
+					<span class="badge progress-bar-danger" ng-show='note["noteStatus"] === "Blocked"'> Blocked </span>
+					<span class="badge progress-bar-success" ng-show='note["noteStatus"]	=== "Closed"'> Closed </span>
+					<span class="badge progress-bar-warning" ng-show='note["noteStatus"] ==="In Progress"'> In Progress </span>
+					<span class="badge progress-bar-primary" ng-show='note["noteStatus"] ==="Open"'> Open </span>
+				-->
+
+				 	<span class='badge alert-primary pull-right' ng-click='pop(note["noteId"], "update")'>
+				 		{{ note.noteUpdates.length}}
+				 	</span>
+				</h4>			
+
+				<p class='list-group-item-text'>				
+				 	<table><td>{{ note['noteDesc'] }} </td>
+				 	<span class='glyphicon glyphicon-edit pull-right' ng-click='pop(note["noteId"], "edit")'></span>
+				 	</table>
+
+					<span class="label label-default pull-right"> 
+						Last Updated on {{ note["noteLastUpdatedOn"] | date: 'dd-MMM-yyyy, HH:mm:ss' }}	
+					</span>
+				</p>
+
+				</a>
+			</div>	
+		</div>
+		
+	</div>
+</div>
+

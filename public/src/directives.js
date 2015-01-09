@@ -1,21 +1,18 @@
 angular.module('PMNoteApp')
-	.directive('formField', function(){
-		// Runs during compile
-		return {
-			// name: '',
-			// priority: 1,
-			// terminal: true,
-			// scope: {}, // {} = isolate, true = child, false/undefined = no change
-			// controller: function($scope, $element, $attrs, $transclude) {},
-			// require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
-			//	restrict: 'EA', // E = Element, A = Attribute, C = Class, M = Comment
-			// template: '',
-			//   templateUrl: '',
-			// replace: true,
-			// transclude: true,
-			// compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
-			link: function($scope, iElm, iAttrs, controller) {
-				
-			}
-		};
-	}]);
+	.directive('jsonText', function() {
+	    return {
+	        restrict: 'A',
+	        require: 'ngModel',
+	        link: function(scope, element, attr, ngModel) {            
+	          function into(input) {
+	            return JSON.parse(input);
+	          }
+	          function out(data) {
+	            return JSON.stringify(data);
+	          }
+	          ngModel.$parsers.push(into);
+	          ngModel.$formatters.push(out);
+
+	        }
+	    };
+	});

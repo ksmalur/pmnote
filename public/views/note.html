@@ -4,22 +4,22 @@
 			<h3 class='panel-title'>Dashboard</h3>
 		</div>
 		<div class='panel-body'>
+
 			<div class="list-group">
-				<h4 class='list-group-item-heading'> Filter by Status </h4>
-				<a href="#" class="list-group-item active"> All <span class='badge'> {{ notes.length }} </span> </a>
-				<a href="#" class="list-group-item"> Open <span class='badge'> {{ statusFilter("Open").length }} </span></a>
-				<a href="#" class="list-group-item"> In Progress <span class='badge'> {{ statusFilter("In Progress").length }} </span> </a>
-				<a href="#" class="list-group-item"> Blocked <span class='badge'> {{ statusFilter("Blocked").length }} </span></a>
-				<a href="#" class="list-group-item"> Closed <span class='badge'> {{ statusFilter("Closed").length }} </span></a>
+				<h4 class='list-group-item-heading'> Status </h4>
+					<a href="#" class="list-group-item" ng-repeat="statusItem in noteStatusList" ng-click='updateFilter("noteStatus" , statusItem)'  ng-class="{active:selectedStatus==statusItem}"> 
+						{{ statusItem }} 
+					</a>
 			</div>
 
 			<div class="list-group">
-				<h4 class='list-group-item-heading'> Filter by Types </h4>
-				<a href="#" class="list-group-item active"> All <span class='badge'> {{ notes.length }} </span> </a>
-				<a href="#" class="list-group-item"> Risk <span class='badge'> {{ typeFilter("Risk").length }} </span> </a>
-				<a href="#" class="list-group-item"> Issue <span class='badge'> {{ typeFilter("Issue").length }} </span> </a>
-				<a href="#" class="list-group-item"> Action Items <span class='badge'> {{ typeFilter("Action Item").length }} </span> </a>
+				<h4 class='list-group-item-heading'> Type  </h4>
+					<a href="#" class="list-group-item" ng-repeat="typeItem in noteTypeList" ng-click='updateFilter("noteType" , typeItem)'  ng-class="{active:selectedType==typeItem}" > 
+						{{ typeItem }} 
+					</a>
+
 			</div>
+			
 		</div>
 		
 	</div>
@@ -28,14 +28,16 @@
 <div class="col-lg-8">
 	<div class='panel panel-primary'>
 		<div class='panel-heading'>
-			<h3 class='panel-title'>All Notes </h3>
+			<h3 class='panel-title'> Notes 
+				<span class='badge pull-right'> {{ filteredNotes.length }} notes </span> 
+			</h3>
 		</div>
 		<div class='panel-body'>
 
 		<div class="input-group">
 				<input type='search' class='form-control' placeholder='Search Notes...' ng-model='query'/>
 				<div class="input-group-btn">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"">
 				 		 {{sortCriteria.fieldDisplay}} <span class="caret" ></span></button>
 				 		<ul class="dropdown-menu dropdown-menu-right" role="menu">
 				 			<li><a href="#" ng-click='setSortCriteria("noteStatus", "Status")'> Status </a></li>
@@ -57,7 +59,7 @@
 		</div>
 
 			<div class='list-group'>
-				<a href="#" class='list-group-item' ng-repeat='note in notes | filter: query  | orderBy: sortCriteria.sortField: sortCriteria.sortOrder'>
+				<a href="#" class='list-group-item' ng-repeat='note in filteredNotes | filter: query  | orderBy: sortCriteria.sortField: sortCriteria.sortOrder'>
 				<h4 class='list-group-item-heading'>
 					{{ note['noteTitle'] }} 							
 					<span class="badge progress-bar-info"> {{ note['noteType'] }} </span>

@@ -1,6 +1,5 @@
 function updateNoteType($scope){
 	if ($scope.note.noteTitle !== "") {
-			//	console.log("Printing on BlurUpdate - " + $scope.note.noteTitle);
 				var riskString = "@risk";
 				var issueString = "@issue";
 				var aiString = "@ai";	
@@ -8,34 +7,21 @@ function updateNoteType($scope){
 				
 				titleString = titleString.toLowerCase();
 				var selectedType = $scope.note.noteType;
-				//var selectedType = "";
 
 				riskOcc = titleString.indexOf(riskString);
 				issueOcc = titleString.indexOf(issueString);		
 				aiOcc = titleString.indexOf(aiString);
 
-				// console.log("Risk Occ = " + riskOcc);
-				// console.log("Issue Occ = " + issueOcc);
-				// console.log("AI Occ = " + aiOcc);
-				
-				// console.log("*****************");
-
+		
 				if (riskOcc == -1) riskOcc = 9999;
 				if (issueOcc == -1) issueOcc = 9999;
 				if (aiOcc == -1) aiOcc = 9999;
 
-				// console.log("Risk Occ = " + riskOcc);
-				// console.log("Issue Occ = " + issueOcc);
-				// console.log("AI Occ = " + aiOcc);
-
 				if (riskOcc < issueOcc && riskOcc < aiOcc){
-					// console.log("Risk Occurence");
 					selectedType = "Risk";
 				} else if (issueOcc < riskOcc && issueOcc < aiOcc){
-					//console.log("Issue Occurence");
 					selectedType = "Issue";
 				}else if (aiOcc < riskOcc && aiOcc < issueOcc){
-					// console.log("AI Occurence");
 					selectedType = "Action Item";
 				}
 
@@ -48,15 +34,29 @@ function updateNoteType($scope){
 
 
 angular.module('PMNoteApp')
-	.controller('NoteController', function($scope, NoteResource, $location, $rootScope, filterFilter){
+	.controller('NoteController', function($scope, NoteResource, $location, $rootScope, filterFilter, $filter){
 		$scope.notes = NoteResource.query();
-		//$scope.filteredNotes = NoteResource.get({noteStatus: ["Blocked", "Open"]}, true)
+
+		$scope.noteStatusList = [ 'All', 'Open', 'In Progress', 'Blocked', 'Closed'];
+		$scope.noteTypeList = ['All' , 'Risk', 'Issue', 'Action Item'];
+		
 		$rootScope.PAGE = "all";
 		$scope.query = "";
+		
 		$scope.sortCriteria = {sortField: "noteLastUpdatedOn", sortOrder: true, fieldDisplay: "Last Updated Time", orderDisplay: "Descending"}
-		$scope.filter = {};
+		
+		$scope.filterCriteria =   {
+		 		"noteStatus": "All",
+  				"noteType": "All"
+		}; 
+		$scope.filteredNotes = NoteResource.query();
 
 		$scope.fields = ['noteTitle', 'noteDesc', 'noteType', 'noteStatus', 'noteOwner'];
+
+		
+		$scope.selectedStatus = $scope.filterCriteria.noteStatus;
+		$scope.selectedType =  $scope.filterCriteria.noteType;
+
 		$scope.pop = function  (noteId, context) {
 			// body...
 			var prefix = "";
@@ -71,9 +71,42 @@ angular.module('PMNoteApp')
 		};
 
 
+
+		$scope.updateFilter = function(fieldName, filterValue) {
+
+			console.log("Field Name: " + fieldName);
+			console.log("Filter Value: " + filterValue);
+			// $scope.filterCriteria[fieldNme] = filterValue;	
+			
+			$scope.filterCriteria[fieldName] = filterValue;
+			// if (filterValue == "All") {
+			// 	delete $scope.filterCriteria[fieldName];
+
+			// }
+
+			if(fieldName == "noteStatus"){
+				$scope.selectedStatus = filterValue;
+			} else if (fieldName == "noteType"){
+				$scope.selectedType = filterValue;
+			}
+
+
+			if($scope.selectedStatus == "All"){
+				delete $scope.filterCriteria["noteStatus"];
+			} 
+
+			if ($scope.selectedType == "All") {
+				delete $scope.filterCriteria["noteType"];
+			}
+
+			$scope.filteredNotes = $filter('filter')($scope.notes, $scope.filterCriteria);
+			
+		};
+
+
+
 		$scope.setSortCriteria = function(input, display){
 			$scope.sortCriteria.sortField = input;
-			//$scope.sortCriteria.sortOrder = true;
 			$scope.sortCriteria.fieldDisplay = display;
 		};
 
@@ -90,13 +123,13 @@ angular.module('PMNoteApp')
 
 		$scope.statusFilter = function(status){
 			return filterFilter($scope.notes, status);
-		}
+		};
 
 		$scope.typeFilter = function(type){
 			//queryStr = "{noteType: '" + type + "'}"
 			// console.log(queryStr)
 			return filterFilter($scope.notes, type);
-		}
+		};
 
 	})
 	.controller('NewController', function($scope, NoteResource, $location, $timeout, $rootScope){

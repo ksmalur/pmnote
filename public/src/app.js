@@ -17,6 +17,10 @@ angular.module('PMNoteApp', ['ngRoute', 'ngResource', 'ngMessages'])
 				controller: 'UpdateController',
 				templateUrl: 'views/update.html'							
 			})
+			.when('/themes', {
+				controller: "ThemeController",
+				templateUrl: 'views/theme.html'
+			})
 			.otherwise({
 				redirectTo: '/notes'
 			});	

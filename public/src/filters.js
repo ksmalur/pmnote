@@ -22,4 +22,23 @@ angular.module('PMNoteApp')
 				return letter.toUpperCase();
 			});
 		};
+	})
+	.filter('themeName', function (){
+		return function (input) {
+			var cut =  input.search(".bootstrap");
+ 			var tmp = input.substr(0,1);
+			input =   input.substr(0,cut);
+			return input[0].toUpperCase() + input.slice(1);
+		};
+	})
+	.filter('selectThemeName', function (){
+		return function (input) {
+			if(input){
+				console.log ("In COnsideration :" + input);
+				var searchString = "__select_";
+				console.log ("Found Cut :" + searchString.length);
+				input = input.slice(searchString.length);
+				return input[0].toUpperCase() + input.slice(1);
+			}
+		};
 	});

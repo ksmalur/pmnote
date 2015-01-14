@@ -36,7 +36,6 @@ function updateNoteType($scope){
 angular.module('PMNoteApp')
 	.controller('NoteController', function($scope, NoteResource, $location, $rootScope, filterFilter, $filter){
 		$scope.notes = NoteResource.query();
-
 		$scope.noteStatusList = [ 'All', 'Open', 'In Progress', 'Blocked', 'Closed'];
 		$scope.noteTypeList = ['All' , 'Risk', 'Issue', 'Action Item'];
 		
@@ -131,6 +130,12 @@ angular.module('PMNoteApp')
 			return filterFilter($scope.notes, type);
 		};
 
+
+
+
+
+
+
 	})
 	.controller('NewController', function($scope, NoteResource, $location, $timeout, $rootScope){
 
@@ -208,4 +213,51 @@ angular.module('PMNoteApp')
 		$scope.see = function(){
 
 		};
+	})
+	.controller("ThemeController", function ($scope, $rootScope, $location, ThemeResource, $http, $window){
+		ThemeResource.query(function (data){
+			$rootScope.PAGE = "themes";
+			$scope.themes = data.themes;	
+
+			console.log("1: "+ $scope.selectedTheme);
+			for (var i=0; i< data.themes.length; i++){
+				if(data.themes[i].selected){
+					$scope.selectedIndex = i;
+					$scope.selectedTheme = data.themes[i].displayname;
+					console.log("2: " + $scope.selectedTheme);
+					break;
+				}
+			}
+
+
+
+
+		});
+		$scope.updateSel = function(theme){
+			
+			$scope.selectedTheme = theme;
+			console.log(theme);
+		};
+
+		$scope.postUpdate = function () {
+			var req = {};
+			req.currentSelFile = $scope.themes[$scope.selectedIndex].filename;
+
+			var n = $scope.themes.length;
+			for (var i=0 ; i< n;  i++){
+				if ($scope.themes[i].displayname == $scope.selectedTheme){
+					req.selected = true;
+					req.displayname = $scope.selectedTheme;
+					req.filename = $scope.themes[i].filename;
+					break;
+				}
+			}
+			
+			$http.post('settings/themes', req);
+			$location.path("/");
+			$window.location.reload();
+			// $scope.themes.$save();
+		};
+
+				
 	});

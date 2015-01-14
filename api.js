@@ -157,4 +157,7 @@ router
 				}
 			});
 		});
+
+router
+	
 module.exports = router;

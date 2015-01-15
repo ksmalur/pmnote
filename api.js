@@ -42,15 +42,10 @@ var express		= require('express'),
 
 
 router
-	.use(function(req, res, next) {
-		if(!req.user) {
-			req.user = {id: 1, username: 'kmalur'};
-		}
-		next();
-	})
 	.use(bodyParser.json())
 	.route('/note')
 		.get(function( req, res) {
+			console.log("I AM HERE: " + req.user);
 			NoteModel.find({noteOwner : req.user.username}, function(err, data){
 				console.log("Found " + data.length + " note(s).");
 				res.json(data);
